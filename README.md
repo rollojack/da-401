@@ -4,13 +4,13 @@
 (Write a clear, descriptive title for your project.)
 
 ## Research Question
-What question are you trying to answer?
+Does MLB Home Run Derby Participation influence a difference in player performance in the 2nd half of the season when considering hitters' approaches?
 
 ## Data Source
-Where is your data coming from? 
+My data is from Baseball Savant and Baseball Reference.
 
 ## Methods
-Which methods or models will you use? 
+Some simple models such as t-tests, linear and multivariate regression, and confidence intervals will be utilized. Additionally, I plan to incorporate more advanced methods such as clustering and principal component analysis.
 
 ## Expected Timeline
 What do you expect to produce every week?
