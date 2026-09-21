@@ -1,4 +1,4 @@
-# DA401 Capstone Project - [Jack Rollo]
+# DA401 Capstone Project - Jack Rollo
 
 ## Project Title
 (Write a clear, descriptive title for your project.)
