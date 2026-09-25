@@ -1,13 +1,13 @@
 # DA401 Capstone Project - Jack Rollo
 
 ## Project Title
-(Write a clear, descriptive title for your project.)
+Does the Home Run Derby Change How Hitters Hit? A Matched-Comparison Study of Batted-Ball Approach
 
 ## Research Question
-Does MLB Home Run Derby Participation influence a difference in player performance in the 2nd half of the season when considering hitters' approaches?
-
+How, if at all, does a Home Run Derby participant's batted-ball profile change from the first half to the second half of the season, relative to a matched group of non-participating All-Stars? 
 ## Data Source
-My data is from Baseball Savant and Baseball Reference.
+My data is from Baseball Savant, FanGraphs, and Baseball Reference.
+Baseball Savant was used primarily for a hitter's swing characteristics, including recently published data such as bat speed and attack angle. 
 
 ## Methods
 Some simple models such as t-tests, linear and multivariate regression, and confidence intervals will be utilized. Additionally, I plan to incorporate more advanced methods such as clustering and principal component analysis.
