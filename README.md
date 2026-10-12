@@ -10,7 +10,7 @@ My data is from Baseball Savant, FanGraphs, and Baseball Reference.
 Baseball Savant was used primarily for a hitter's swing characteristics, including recently published data such as bat speed and attack angle. 
 
 ## Methods
-Some simple models such as t-tests, linear and multivariate regression, and confidence intervals will be utilized. Additionally, I plan to incorporate more advanced methods such as clustering and principal component analysis.
+Some simple models such as t-tests, linear and multivariate regression, and confidence intervals will be utilized. Additionally, I plan to incorporate more advanced methods such as k-means clustering and matched pairs analysis.
 
 ## Expected Timeline
 What do you expect to produce every week?
