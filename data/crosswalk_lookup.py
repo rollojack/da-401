@@ -214,7 +214,7 @@ def main():
     in_path = sys.argv[1] if len(sys.argv) > 1 else "ID_Crosswalk.csv"
     out_path = sys.argv[2] if len(sys.argv) > 2 else "ID_Crosswalk.csv"
 
-    with open(in_path, newline="", encoding="utf-8") as f:
+    with open(in_path, newline="", encoding="utf-8-sig") as f:
         reader = csv.DictReader(f)
         players = [row["Player"] for row in reader if row.get("Player")]
 

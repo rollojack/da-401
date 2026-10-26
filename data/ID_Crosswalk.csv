@@ -1,12 +1,12 @@
 Player,MLBAM ID (Savant),FanGraphs ID,Baseball-Reference Key,Birthdate,Notes
 Todd Frazier,453943,785,frazito01,,
-Bryce Harper,547180,11579,harpebr03,,
-Michael Cuddyer,150212,1534,cuddymi01,,
-Chris Davis,448801,9272,davisch02,,
-Pedro Alvarez,476883,2495,alvarpe01,2/6/1987,Manually verified override.
+Joc Pederson,592626,11899,pederjo01,,
+Albert Pujols,405395,1177,pujolal01,,
+Josh Donaldson,518626,5038,donaljo02,,
+Anthony Rizzo,519203,3473,rizzoan01,,
 Prince Fielder,425902,4613,fieldpr01,,
-David Wright,431151,3787,wrighda03,,
-Robinson Cano,429664,3269,canoro01,10/22/1982,Manually verified override.
+Manny Machado,592518,11493,machama01,,
+Kris Bryant,592178,15429,bryankr01,,
 Giancarlo Stanton,519317,4949,stantmi03,,
 Mark Trumbo,444432,6876,trumbma01,,
 Adam Duvall,594807,10950,duvalad01,,
@@ -30,7 +30,6 @@ Rhys Hoskins,656555,16472,hoskirh01,,
 Pete Alonso,624413,19251,alonspe01,,
 Matt Chapman,656305,16505,chapmma01,,
 Josh Bell,605137,13145,belljo02,,2 name matches found - took most recent MLB debut; verify.
-Joc Pederson,592626,11899,pederjo01,,
 Ronald Acuna Jr.,660670,18401,acunaro01,,5 name matches found - took most recent MLB debut; verify.
 Carlos Santana,467793,2396,santaca01,,
 Vladimir Guerrero Jr.,665489,19611,guerrvl02,,2 name matches found - took most recent MLB debut; verify.
@@ -41,7 +40,6 @@ Salvador Perez,521692,7304,perezsa02,,5 name matches found - took most recent ML
 Matt Olson,621566,14344,olsonma02,,
 Joey Gallo,608336,14128,gallojo01,,
 Shohei Ohtani,660271,19755,ohtansh01,,
-Albert Pujols,405395,1177,pujolal01,,
 Julio Rodriguez,677594,23697,rodriju01,,5 name matches found - took most recent MLB debut; verify.
 Jose Ramirez,608070,13510,ramirjo01,,7 name matches found - took most recent MLB debut; verify.
 Luis Robert Jr.,673357,20043,roberlu01,,
@@ -63,6 +61,8 @@ James Wood,695578,29518,woodja03,,
 Jazz Chisholm Jr.,665862,20454,chishja01,,
 Jordan Walker,691023,27475,walkejo02,,
 Ben Rice,700250,29576,ricebe01,,
-Munetaka Murakami,808959,-1,murakmu01,,
+Munetaka Murakami,808959,37120,murakmu01,,
 Jac Caglianone,695506,35041,caglija01,,
 Willson Contreras,575929,11609,contrwi01,,
+Bryce Harper,547180,11579,harpebr03,,
+Robinson Cano,429664,3269,canoro01,10/22/1982,
