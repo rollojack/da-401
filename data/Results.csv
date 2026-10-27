@@ -1,0 +1,6 @@
+"analysis","estimate","ci_low","ci_high","p_value","n","alpha","significant"
+"PRIMARY: PAI change, derby vs control (adjusted)",0.107,-0.077,0.292,0.253,142,0.05,FALSE
+"Supporting: PAI change within participants (paired t)",0.109,-0.016,0.234,0.0857,85,0.05,FALSE
+"Supporting: PAI change, derby vs control (unadjusted Welch t)",0.086,-0.095,0.267,0.349,142,0.05,FALSE
+"Secondary: HR/FB change, derby vs control (adjusted)",1.855,-0.262,3.973,0.049,142,0.025,FALSE
+"Secondary: HR Pull% change within participants (paired t)",5.614,0.678,10.55,0.0111,85,0.025,TRUE

@@ -1,0 +1,72 @@
+"season","participant","participant_id","control","control_id","distance"
+2015,"Anthony Rizzo",519203,"Nolan Arenado",571448,1.135
+2015,"Josh Donaldson",518626,"Yasmani Grandal",518735,1.338
+2015,"Kris Bryant",592178,"Justin Upton",457708,1.463
+2015,"Manny Machado",592518,"Andrew McCutchen",457705,1.652
+2015,"Albert Pujols",405395,"Buster Posey",457763,1.782
+2015,"Todd Frazier",453943,"Adrián González",408236,1.804
+2015,"Joc Pederson",592626,"Brandon Crawford",543063,2.03
+2016,"Corey Seager",608369,"Paul Goldschmidt",502671,0.936
+2016,"Todd Frazier",453943,"Kris Bryant",592178,1.226
+2016,"Robinson Cano",429664,"Mike Trout",545361,1.309
+2016,"Mark Trumbo",444432,"Edwin Encarnación",429665,1.607
+2016,"Wil Myers",571976,"Marcell Ozuna",542303,1.798
+2017,"Charlie Blackmon",453568,"Jonathan Schoop",570731,0.533
+2017,"Giancarlo Stanton",519317,"Marcell Ozuna",542303,1.027
+2017,"Gary Sanchez",596142,"Avisaíl García",541645,1.619
+2017,"Cody Bellinger",641355,"Justin Smoak",475253,2.019
+2018,"Freddie Freeman",518692,"J.T. Realmuto",592663,0.797
+2018,"Javier Baez",595879,"Shin-Soo Choo",425783,1.134
+2018,"Alex Bregman",608324,"Yadier Molina",425877,1.344
+2018,"Rhys Hoskins",656555,"Trevor Story",596115,1.455
+2018,"Bryce Harper",547180,"Mitch Haniger",571745,1.458
+2018,"Jesus Aguilar",542583,"Mike Trout",545361,1.898
+2018,"Max Muncy",571970,"Nolan Arenado",571448,2.012
+2018,"Kyle Schwarber",656941,"Charlie Blackmon",453568,2.024
+2019,"Ronald Acuna Jr.",660670,"Trevor Story",596115,0.922
+2019,"Alex Bregman",608324,"Mike Moustakas",519058,1.099
+2019,"Carlos Santana",467793,"Ketel Marte",606466,1.32
+2019,"Matt Chapman",656305,"Xander Bogaerts",593428,1.446
+2019,"Pete Alonso",624413,"Max Muncy",571970,1.571
+2019,"Josh Bell",605137,"Francisco Lindor",596019,1.692
+2019,"Joc Pederson",592626,"Charlie Blackmon",453568,1.966
+2021,"Trey Mancini",641820,"Kris Bryant",592178,1.273
+2021,"Trevor Story",596115,"J.D. Martinez",502110,1.373
+2021,"Matt Olson",621566,"Nelson Cruz",443558,1.59
+2021,"Pete Alonso",624413,"Freddie Freeman",518692,1.618
+2021,"Shohei Ohtani",660271,"Fernando Tatis Jr.",665487,1.735
+2021,"Joey Gallo",608336,"Adolis García",666969,1.754
+2021,"Salvador Perez",521692,"Teoscar Hernández",606192,1.787
+2021,"Juan Soto",665742,"Rafael Devers",646240,2.035
+2022,"Ronald Acuna Jr.",660670,"Ian Happ",664023,1.076
+2022,"Julio Rodriguez",677594,"Shohei Ohtani",660271,1.112
+2022,"Corey Seager",608369,"Rafael Devers",646240,1.334
+2022,"Albert Pujols",405395,"Jose Trevino",624431,1.339
+2022,"Pete Alonso",624413,"Manny Machado",592518,1.828
+2022,"Jose Ramirez",608070,"Kyle Tucker",663656,2.057
+2023,"Adley Rutschman",668939,"Lourdes Gurriel Jr.",666971,0.84
+2023,"Vladimir Guerrero Jr.",665489,"Corey Seager",608369,1.21
+2023,"Adolis Garcia",666969,"Matt Olson",621566,1.212
+2023,"Julio Rodriguez",677594,"Austin Riley",663586,1.232
+2023,"Randy Arozarena",668227,"Salvador Perez",521692,1.669
+2023,"Mookie Betts",605141,"Nolan Arenado",571448,1.899
+2023,"Luis Robert Jr.",673357,"Brent Rooker",667670,2.066
+2023,"Pete Alonso",624413,"Will Smith",669257,2.078
+2024,"Alec Bohm",664761,"Freddie Freeman",518692,1.11
+2024,"Marcell Ozuna",542303,"Shohei Ohtani",660271,1.206
+2024,"Teoscar Hernandez",606192,"Riley Greene",682985,1.289
+2024,"Bobby Witt Jr.",677951,"Yordan Alvarez",670541,1.492
+2024,"Pete Alonso",624413,"Bryan Reynolds",668804,1.509
+2024,"Gunnar Henderson",683002,"Josh Naylor",647304,1.832
+2024,"Jose Ramirez",608070,"Marcus Semien",543760,1.911
+2024,"Adolis Garcia",666969,"Jarren Duran",680776,1.94
+2025,"Matt Olson",621566,"Pete Alonso",624413,0.895
+2025,"Brent Rooker",667670,"Hunter Goodman",696100,1.31
+2025,"Byron Buxton",621439,"Kyle Schwarber",656941,1.338
+2025,"Junior Caminero",691406,"Elly De La Cruz",682829,1.624
+2025,"James Wood",695578,"Ronald Acuña Jr.",660670,1.955
+2025,"Cal Raleigh",663728,"Eugenio Suárez",553993,2.054
+2026,"Willson Contreras",575929,"CJ Abrams",682928,1.166
+2026,"Jordan Walker",691023,"Drake Baldwin",686948,1.483
+2026,"Kyle Schwarber",656941,"Hunter Goodman",696100,1.726
+2026,"Bryce Harper",547180,"Freddie Freeman",518692,2.007
