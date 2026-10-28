@@ -86,15 +86,20 @@ by_half <- function(var1, var2) {
 
 half_plot <- function(s, title, subtitle, ylab, caption, fmt) {
   dodge <- position_dodge(width = 0.12)
+  starts <- s[s$Half == "First half", ]
   ends <- s[s$Half == "Second half", ]
+  # Values beside every point: first half to the left, second half to the
+  # right (with the group name, so the lines are directly labeled).
   ggplot(s, aes(Half, mean, colour = Group, group = Group)) +
     geom_line(linewidth = 1, position = dodge) +
     geom_errorbar(aes(ymin = lo, ymax = hi), width = 0.05, linewidth = 0.6, position = dodge) +
     geom_point(size = 3.2, position = dodge) +
-    geom_text(data = ends, aes(label = paste0(Group, "  ", fmt(mean))),
+    geom_text(data = starts, aes(label = fmt(mean)),
+              hjust = 1, nudge_x = -0.12, size = 3.4, colour = INK, show.legend = FALSE) +
+    geom_text(data = ends, aes(label = paste0(fmt(mean), "  ", Group)),
               hjust = 0, nudge_x = 0.12, size = 3.4, colour = INK, show.legend = FALSE) +
     scale_colour_manual(values = group_cols) +
-    scale_x_discrete(expand = expansion(add = c(0.3, 1.15))) +
+    scale_x_discrete(expand = expansion(add = c(0.55, 1.15))) +
     labs(title = title, subtitle = subtitle, x = NULL, y = ylab, caption = wrap(caption)) +
     theme_paper()
 }
@@ -146,7 +151,7 @@ p4 <- half_plot(s4,
   "Derby participants pulled more of their home runs after the break",
   "Mean share of home runs pulled, by half, 71 matched pairs (error bars: 95% CI)",
   "Home runs pulled (%)",
-  "HR direction classified from Statcast hit coordinates (pull side beyond 15 degrees); 97.8% agreement with manual spray-chart coding.",
+  "Home-run direction classified from Statcast hit coordinates (pulled = more than 15 degrees toward the batter's pull side).",
   function(x) sprintf("%.1f%%", x))
 save(p4, "fig4_hr_pull_by_half.png", 3.8)
 
