@@ -15,7 +15,8 @@ Inputs (data/): Matched_Pairs.csv, Unmatched_Participants.csv,
     FanGraphs_Batted_Ball_Splits_Controls.csv (controls),
     fangraphs_exports/ (for the eligible-sample reference stats),
     Statcast_Participants_H1.csv, Statcast_Pool_H1.csv, Control_Pool.csv,
-    Savant_Batted_Ball.csv (participants' HR spray counts and PA)
+    Savant_Batted_Ball.csv (participants' PA),
+    Statcast_HR_Participants.csv, Statcast_HR_Controls.csv (HR spray)
 Outputs (data/): Analysis_Dataset.csv, PAI_Reference_Stats.csv
 
 Usage (from the repo root):
@@ -110,12 +111,25 @@ def main():
                    "sc_hr_fb_h1", "avg_ev_h1", "avg_la_h1"]
     d = d.merge(cov, on=["mlbam_id", "season"], how="left")
 
-    # HR spray (secondary outcome) - hand-coded for participants only
-    spray = savant[["MLBAM ID", "Season", "Half", "HR Pull%", "HR (half total)"]]
+    # HR spray (secondary outcome) - classified automatically from Statcast hit
+    # coordinates for both groups (code/hr_spray_statcast.py). HR_Pull% is the
+    # share of classifiable home runs that were pulled; home runs with no
+    # coordinates count toward HR_{half} but not toward HR_Pull%.
+    hrs = pd.concat([pd.read_csv("data/Statcast_HR_Participants.csv"),
+                     pd.read_csv("data/Statcast_HR_Controls.csv")])
+    hrs = hrs.drop_duplicates(["MLBAM ID", "Season", "game_date", "hc_x", "hc_y"])
+    keys = ["MLBAM ID", "Season", "Half"]
+    spray = pd.DataFrame({
+        "HR": hrs.groupby(keys).size(),
+        "classified": hrs.dropna(subset=["direction"]).groupby(keys).size(),
+        "pulled": hrs[hrs.direction == "pull"].groupby(keys).size(),
+    }).fillna(0).reset_index()
+    spray["HR_Pull%"] = 100 * spray.pulled / spray.classified.where(spray.classified > 0)
     for h in ("1st", "2nd"):
-        s = spray[spray.Half == h].drop(columns="Half")
+        s = spray[spray.Half == h][["MLBAM ID", "Season", "HR_Pull%", "HR"]]
         s.columns = ["mlbam_id", "season", f"HR_Pull%_{h}", f"HR_{h}"]
         d = d.merge(s, on=["mlbam_id", "season"], how="left")
+        d[f"HR_{h}"] = d[f"HR_{h}"].fillna(0).astype(int)   # no rows = no home runs
     d["HR_Pull%_change"] = d["HR_Pull%_2nd"] - d["HR_Pull%_1st"]
 
     d.to_csv("data/Analysis_Dataset.csv", index=False)

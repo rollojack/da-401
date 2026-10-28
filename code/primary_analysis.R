@@ -24,8 +24,11 @@
 #
 # SECONDARY (exploratory, Bonferroni alpha = .05 / 2 = .025)
 #   a. HR/FB change: same adjusted regression as the primary.
-#   b. HR Pull% change: paired t-test within participants only (HR spray was
-#      hand-coded for participants, not controls).
+#   b. HR Pull% change: same adjusted regression. HR direction is classified
+#      automatically from Statcast hit coordinates for both groups
+#      (code/hr_spray_statcast.py; 97.8% agreement with manual coding of the
+#      participants). This control comparison replaced an initial
+#      participants-only paired t-test, which is still reported as supporting.
 #
 # EXPLORATORY
 #   Regime check: one-way ANOVA of PAI_change across regime (timer/swing) x
@@ -80,10 +83,13 @@ add("Supporting: PAI change, derby vs control (unadjusted Welch t)",
 adjusted_effect("HR_FB_change", "HR_FB_1st", m,
                 "Secondary: HR/FB change, derby vs control (adjusted)", ALPHA_SECONDARY)
 
+adjusted_effect("HR_Pull__change", "HR_Pull__1st", m,
+                "Secondary: HR Pull% change, derby vs control (adjusted)", ALPHA_SECONDARY)
+
 hp <- parts[complete.cases(parts[, c("HR_Pull__1st", "HR_Pull__2nd")]), ]
 ht <- t.test(hp$HR_Pull__2nd, hp$HR_Pull__1st, paired = TRUE,
              conf.level = 1 - ALPHA_SECONDARY)
-add("Secondary: HR Pull% change within participants (paired t)",
+add("Supporting: HR Pull% change within participants (paired t)",
     ht$estimate, ht$conf.int[1], ht$conf.int[2], ht$p.value, nrow(hp), ALPHA_SECONDARY)
 
 # ---- EXPLORATORY: regime x status ----
