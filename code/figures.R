@@ -1,8 +1,13 @@
-# Figures for the early-results paper.
+# Figures for the paper.
 #
-# Inputs (data/): Matching_Balance.csv, Analysis_Dataset.csv, Results.csv
+# Inputs (data/): Matching_Balance.csv, Analysis_Dataset.csv, Results.csv,
+#                 Matched_Pairs.csv, Unmatched_Participants.csv
 # Outputs (figures/): fig1_balance.png, fig2_pai_by_half.png,
-#                     fig3_effects.png, fig4_hr_pull_by_half.png
+#                     fig3_effects.png, fig4_hr_pull_by_half.png,
+#                     fig5_matching_distance.png
+#
+# Confidence levels follow the tests they illustrate: 95% for the primary
+# outcome, 97.5% (Bonferroni-adjusted) for the secondary outcomes.
 #
 # Run from the repo root:  Rscript code/figures.R
 
@@ -68,16 +73,17 @@ p1 <- ggplot(bal_long, aes(smd, Variable)) +
   theme_paper()
 save(p1, "fig1_balance.png", 3.6)
 
-# ---- Helper: group means by half with 95% CIs ----
-by_half <- function(var1, var2) {
+# ---- Helper: group means by half with t-based CIs at the given level ----
+by_half <- function(var1, var2, level = 0.95) {
+  q <- function(n) qt(1 - (1 - level) / 2, n - 1)
   out <- do.call(rbind, lapply(levels(m$Group), function(g) {
     do.call(rbind, lapply(c("First half", "Second half"), function(h) {
       x <- m[m$Group == g, if (h == "First half") var1 else var2]
       x <- x[!is.na(x)]
       se <- sd(x) / sqrt(length(x))
       data.frame(Group = g, Half = h, mean = mean(x),
-                 lo = mean(x) - qt(.975, length(x) - 1) * se,
-                 hi = mean(x) + qt(.975, length(x) - 1) * se)
+                 lo = mean(x) - q(length(x)) * se,
+                 hi = mean(x) + q(length(x)) * se)
     }))
   }))
   out$Group <- factor(out$Group, levels = levels(m$Group))
@@ -146,13 +152,48 @@ p3 <- p3a / p3b + plot_annotation(
 save(p3, "fig3_effects.png", 5.4)
 
 # ---- Figure 4: HR Pull% by half ----
-s4 <- by_half("HR_Pull%_1st", "HR_Pull%_2nd")
+s4 <- by_half("HR_Pull%_1st", "HR_Pull%_2nd", level = 0.975)
 p4 <- half_plot(s4,
   "Derby participants pulled more of their home runs after the break",
-  "Mean share of home runs pulled, by half, 71 matched pairs (error bars: 95% CI)",
+  "Mean share of home runs pulled, by half, 71 matched pairs (error bars: 97.5% CI, Bonferroni-adjusted)",
   "Home runs pulled (%)",
   "Home-run direction classified from Statcast hit coordinates (pulled = more than 15 degrees toward the batter's pull side).",
   function(x) sprintf("%.1f%%", x))
 save(p4, "fig4_hr_pull_by_half.png", 3.8)
 
-cat("Saved 4 figures to figures/\n")
+# ---- Figure 5: matching distances and the caliper ----
+pairs <- read.csv("data/Matched_Pairs.csv")
+unm <- read.csv("data/Unmatched_Participants.csv")
+CALIPER <- sqrt(2 * qchisq(0.10, df = 6))
+dist <- rbind(
+  data.frame(player = pairs$participant, season = pairs$season,
+             distance = pairs$distance, Status = "Matched (71)"),
+  data.frame(player = unm$player, season = unm$season,
+             distance = unm$closest_distance, Status = "Unmatched (14)"))
+dist$Status <- factor(dist$Status, levels = c("Matched (71)", "Unmatched (14)"))
+far <- dist[dist$distance > 2.9, ]
+far <- far[order(far$distance), ]
+far$label <- paste0(far$player, " (", far$season, ")")
+# Spread labels that would overlap (vertical text needs ~0.1 of x-axis room)
+far$x <- far$distance
+for (i in seq_len(nrow(far))[-1]) far$x[i] <- max(far$x[i], far$x[i - 1] + 0.1)
+p5 <- ggplot(dist, aes(distance, fill = Status)) +
+  geom_histogram(binwidth = 0.1, boundary = 0, colour = "white", linewidth = 0.3) +
+  geom_vline(xintercept = CALIPER, colour = INK, linetype = "dashed", linewidth = 0.5) +
+  annotate("text", x = CALIPER + 0.04, y = Inf, vjust = 1.4, hjust = 0, size = 3.2,
+           colour = INK, label = sprintf("Cutoff = %.1f", CALIPER)) +
+  geom_text(data = far, aes(x = x, y = 2.3, label = label), inherit.aes = FALSE,
+            angle = 90, hjust = 0, size = 2.8, colour = INK2) +
+  scale_fill_manual(values = c("Matched (71)" = DERBY, "Unmatched (14)" = BEFORE)) +
+  scale_x_continuous(breaks = seq(0, 3.5, 0.5)) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.08))) +
+  labs(title = "Most participants had a close All-Star counterpart; 14 did not",
+       subtitle = "Mahalanobis distance from each eligible participant to their closest available candidate",
+       x = "Mahalanobis distance (lower = more similar first half)", y = "Participants",
+       caption = wrap(paste("Participants beyond the cutoff had no non-participating All-Star within",
+                            "the closest 10% of random hitter pairs and were excluded from the matched",
+                            "comparison. Labeled: the most distinct participants."))) +
+  theme_paper()
+save(p5, "fig5_matching_distance.png", 3.8)
+
+cat("Saved 5 figures to figures/\n")
