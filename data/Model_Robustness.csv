@@ -1,0 +1,13 @@
+"model","se_type","estimate","se","ci_low","ci_high","p_value","alpha","significant","n"
+"Primary: Pull-Air Index","Classical OLS",0.107,0.093,-0.077,0.292,0.253,0.05,FALSE,142
+"Primary: Pull-Air Index","HC3 robust",0.107,0.096,-0.082,0.297,0.264,0.05,FALSE,142
+"Primary: Pull-Air Index","Clustered by pair",0.107,0.092,-0.075,0.29,0.247,0.05,FALSE,142
+"Primary: Pull-Air Index","Excluding 9 influential obs.",0.089,0.081,-0.072,0.25,0.274,0.05,FALSE,133
+"Secondary: HR/FB","Classical OLS",1.855,0.934,-0.262,3.973,0.049,0.025,FALSE,142
+"Secondary: HR/FB","HC3 robust",1.855,0.958,-0.316,4.027,0.0549,0.025,FALSE,142
+"Secondary: HR/FB","Clustered by pair",1.855,0.901,-0.186,3.897,0.0413,0.025,FALSE,142
+"Secondary: HR/FB","Excluding 7 influential obs.",1.647,0.834,-0.244,3.538,0.0504,0.025,FALSE,135
+"Secondary: HR Pull%","Classical OLS",6.904,3.176,-0.295,14.103,0.0315,0.025,FALSE,142
+"Secondary: HR Pull%","HC3 robust",6.904,3.185,-0.315,14.122,0.0319,0.025,FALSE,142
+"Secondary: HR Pull%","Clustered by pair",6.904,3.034,0.026,13.781,0.0245,0.025,TRUE,142
+"Secondary: HR Pull%","Excluding 9 influential obs.",4.273,2.657,-1.755,10.301,0.11,0.025,FALSE,133

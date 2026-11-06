@@ -1,0 +1,4 @@
+"model","n","shapiro_W","shapiro_p","breusch_pagan_p","reset_p","max_vif","max_vif_term","max_cooks_d","n_cooks_over_4_n"
+"Primary: Pull-Air Index",142,0.991,0.52,0.728,0.782,4.1,"PAI_1st",0.096,9
+"Secondary: HR/FB",142,0.988,0.254,0.017,0.847,18.8,"HR_FB_1st",0.126,7
+"Secondary: HR Pull%",142,0.99,0.443,0.0396,0.305,1.42,"k_pct_h1",0.094,9
