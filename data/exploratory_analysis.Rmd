@@ -1,0 +1,230 @@
+---
+title: "HR Derby Project -- Exploratory Batted-Ball Analysis"
+subtitle: "FanGraphs splits only -- no control group collected yet"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  html_document:
+    toc: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+
+# ---- one-time package install (uncomment if any of these aren't installed) ----
+# install.packages(c("dplyr", "tidyr", "readr", "ggplot2", "patchwork", "scales"))
+
+library(dplyr)
+library(tidyr)
+library(readr)
+library(ggplot2)
+library(patchwork)
+
+# All PNGs are written here. Change this if you want them somewhere else.
+out_dir <- "."
+dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
+```
+
+## Data
+
+```{r}
+# Point this at wherever FanGraphs_Batted_Ball_Splits.csv lives on your machine.
+fg <- read_csv("FanGraphs_Batted_Ball_Splits.csv", show_col_types = FALSE) %>%
+  filter(!is.na(Player))
+
+metrics <- c("Pull%", "Cent%", "Oppo%", "GB%", "FB%", "LD%", "HR/FB", "K%")
+
+n_pairs <- fg %>% distinct(Player, Season) %>% nrow()
+n_pairs
+```
+
+## Palette
+
+Reference palette from the dataviz skill (light mode). Swap these hex values if
+you want to match a different brand/design system -- nothing else in this file
+needs to change.
+
+```{r palette}
+SURFACE      <- "#fcfcfb"
+INK_PRIMARY  <- "#0b0b0b"
+INK_SECONDARY<- "#52514e"
+INK_MUTED    <- "#898781"
+GRID         <- "#e1e0d9"
+BASELINE     <- "#c3c2b7"
+BLUE         <- "#2a78d6"   # 2nd half higher
+RED          <- "#e34948"   # 2nd half lower
+
+base_theme <- theme_minimal(base_family = "sans") +
+  theme(
+    plot.background   = element_rect(fill = SURFACE, color = NA),
+    panel.background  = element_rect(fill = SURFACE, color = NA),
+    panel.grid.minor  = element_blank(),
+    panel.grid.major.y= element_blank(),
+    axis.text         = element_text(color = INK_MUTED, size = 10.5),
+    axis.title        = element_text(color = INK_SECONDARY, size = 10.5),
+    plot.title        = element_text(color = INK_PRIMARY, face = "bold", size = 15),
+    plot.subtitle     = element_text(color = INK_MUTED, size = 9.5),
+    legend.position   = "none"
+  )
+```
+
+## Paired 1st-half vs 2nd-half table
+
+One row per player-season-metric, with the paired t-test and Wilcoxon
+signed-rank test on the half-to-half delta (2nd half minus 1st half).
+
+```{r paired-stats}
+wide <- fg %>%
+  select(Player, Season, Half, all_of(metrics)) %>%
+  pivot_wider(names_from = Half, values_from = all_of(metrics))
+
+paired_test <- function(metric) {
+  h1 <- wide[[paste0(metric, "_1st")]]
+  h2 <- wide[[paste0(metric, "_2nd")]]
+  keep <- !is.na(h1) & !is.na(h2)
+  h1 <- h1[keep]; h2 <- h2[keep]
+  delta <- h2 - h1
+  n <- length(delta)
+  se <- sd(delta) / sqrt(n)
+  ci95 <- qt(0.975, n - 1) * se
+  tt <- t.test(h2, h1, paired = TRUE)
+  wt <- suppressWarnings(wilcox.test(h2, h1, paired = TRUE))
+  tibble(
+    metric = metric, n = n, mean_delta = mean(delta), ci95 = ci95,
+    t_p = tt$p.value, wilcoxon_p = wt$p.value
+  )
+}
+
+res <- bind_rows(lapply(metrics, paired_test)) %>%
+  mutate(metric = factor(metric, levels = rev(metrics)))
+
+res %>% arrange(desc(metric)) %>% mutate(across(where(is.numeric), ~round(., 3)))
+
+write_csv(res %>% mutate(metric = as.character(metric)),
+          file.path(out_dir, "exploratory_results_table.csv"))
+```
+
+## Chart 1 -- headline summary: mean change across all 8 metrics
+
+```{r chart-summary, fig.width=10.5, fig.height=6, dpi=200}
+res_plot <- res %>%
+  mutate(
+    direction = ifelse(mean_delta >= 0, "up", "down"),
+    sig = case_when(t_p < 0.05 ~ "*", t_p < 0.10 ~ "~", TRUE ~ ""),
+    label = sprintf("%+.1f pp%s", mean_delta, sig),
+    label_x = ifelse(mean_delta >= 0, mean_delta + ci95, mean_delta - ci95),
+    label_hjust = ifelse(mean_delta >= 0, -0.15, 1.15)
+  )
+
+p1 <- ggplot(res_plot, aes(x = metric, y = mean_delta, fill = direction)) +
+  geom_col(width = 0.56) +
+  geom_errorbar(aes(ymin = mean_delta - ci95, ymax = mean_delta + ci95),
+                width = 0.16, color = INK_SECONDARY, linewidth = 0.55) +
+  geom_hline(yintercept = 0, color = BASELINE, linewidth = 0.6) +
+  geom_text(aes(y = label_x, label = label, hjust = label_hjust),
+            color = INK_PRIMARY, size = 3.4) +
+  scale_fill_manual(values = c(up = BLUE, down = RED),
+                     labels = c(up = "2nd half higher", down = "2nd half lower")) +
+  coord_flip(clip = "off") +
+  scale_y_continuous(expand = expansion(mult = 0.22)) +
+  labs(
+    title = "Home Run Derby participants: 1st-half -> 2nd-half batted-ball shifts",
+    subtitle = paste0("FanGraphs splits, ", n_pairs, " player-seasons (2015-2026) | error bars = 95% CI\n",
+                       "* p<.05, ~ p<.10 (paired t-test) | exploratory -- no control group yet"),
+    x = NULL, y = "Mean change, 2nd half minus 1st half (percentage points)"
+  ) +
+  base_theme +
+  theme(legend.position = "top", legend.title = element_blank(),
+        panel.grid.major.x = element_line(color = GRID, linewidth = 0.5))
+
+p1
+ggsave(file.path(out_dir, "exploratory_summary_deltas.png"), p1, width = 10.5, height = 6, dpi = 200)
+```
+
+## Chart 2 -- the core hypothesis: Pull% and FB%
+
+```{r chart-pull-fb, fig.width=10.5, fig.height=5.2, dpi=200}
+paired_panel <- function(metric, title_extra = NULL) {
+  h1 <- wide[[paste0(metric, "_1st")]]
+  h2 <- wide[[paste0(metric, "_2nd")]]
+  keep <- !is.na(h1) & !is.na(h2)
+  d <- tibble(id = seq_len(sum(keep)), h1 = h1[keep], h2 = h2[keep]) %>%
+    mutate(dir = ifelse(h2 >= h1, "up", "down"))
+  long <- d %>% pivot_longer(c(h1, h2), names_to = "half", values_to = "value") %>%
+    mutate(half = factor(half, levels = c("h1", "h2"), labels = c("1st half", "2nd half")))
+  means <- long %>% group_by(half) %>% summarise(value = mean(value), .groups = "drop")
+
+  stat_row <- res %>% filter(as.character(metric) == !!metric)
+  subt <- sprintf("mean %+.1f pp | t p=%.3f, W p=%.3f",
+                   stat_row$mean_delta, stat_row$t_p, stat_row$wilcoxon_p)
+
+  ggplot(long, aes(x = half, y = value, group = id)) +
+    geom_line(aes(color = dir), alpha = 0.22, linewidth = 0.55) +
+    geom_point(color = INK_SECONDARY, size = 1.3, alpha = 0.55) +
+    geom_line(data = means, aes(x = half, y = value, group = 1),
+              color = INK_PRIMARY, linewidth = 1.3, inherit.aes = FALSE) +
+    geom_point(data = means, aes(x = half, y = value),
+               color = INK_PRIMARY, size = 2.6, inherit.aes = FALSE) +
+    scale_color_manual(values = c(up = BLUE, down = RED)) +
+    labs(title = NULL, subtitle = subt, x = NULL, y = metric) +
+    base_theme +
+    theme(panel.grid.major.y = element_line(color = GRID, linewidth = 0.5),
+          plot.subtitle = element_text(color = INK_MUTED, size = 8.3))
+}
+
+p_pull <- paired_panel("Pull%")
+p_fb   <- paired_panel("FB%")
+
+p2 <- (p_pull | p_fb) +
+  plot_annotation(
+    title = "The core hypothesis: more pull, more fly balls in the 2nd half?",
+    subtitle = paste0("Each thin line = one player-season (n=", n_pairs, ") | bold line = mean | exploratory, no control group yet"),
+    theme = theme(plot.title = element_text(color = INK_PRIMARY, face = "bold", size = 15),
+                  plot.subtitle = element_text(color = INK_MUTED, size = 9.5))
+  )
+p2
+ggsave(file.path(out_dir, "exploratory_pull_fb_paired.png"), p2, width = 10.5, height = 5.2, dpi = 200)
+```
+
+## Chart 3 -- HR/FB (the strongest signal so far)
+
+```{r chart-hrfb, fig.width=6.2, fig.height=5.2, dpi=200}
+stat_row <- res %>% filter(as.character(metric) == "HR/FB")
+p3 <- paired_panel("HR/FB") +
+  labs(
+    title = "HR/FB rate drops in the 2nd half",
+    subtitle = paste0("n=", n_pairs, " player-seasons | strongest signal so far | exploratory, no control group yet\n",
+                       sprintf("mean %+.1f pp | paired t p=%.3f | Wilcoxon p=%.3f",
+                               stat_row$mean_delta, stat_row$t_p, stat_row$wilcoxon_p))
+  )
+p3
+ggsave(file.path(out_dir, "exploratory_hrfb_paired.png"), p3, width = 6.2, height = 5.2, dpi = 200)
+```
+
+## Chart 4 -- K% (plate-discipline check)
+
+```{r chart-kpct, fig.width=6.2, fig.height=5.2, dpi=200}
+stat_row <- res %>% filter(as.character(metric) == "K%")
+p4 <- paired_panel("K%") +
+  labs(
+    title = "Strikeout rate, 1st -> 2nd half",
+    subtitle = paste0("n=", n_pairs, " player-seasons | exploratory, no control group yet\n",
+                       sprintf("mean %+.1f pp | paired t p=%.3f | Wilcoxon p=%.3f",
+                               stat_row$mean_delta, stat_row$t_p, stat_row$wilcoxon_p))
+  )
+p4
+ggsave(file.path(out_dir, "exploratory_kpct_paired.png"), p4, width = 6.2, height = 5.2, dpi = 200)
+```
+
+## Notes
+
+- This is exploratory only: `Controls.csv` (the matched non-participant All-Star
+  comparison group) is still just the template row, so nothing here is a test of
+  whether Derby participation *causes* anything -- it's the within-participant
+  1st-half-vs-2nd-half pattern only.
+- Each player-season is one pair; players who appear in multiple Derby seasons
+  (e.g. Pete Alonso, Kyle Schwarber) contribute more than one pair, so
+  observations aren't fully independent -- a mixed-effects model with a
+  player random intercept would be the more rigorous version of this once the
+  full dataset (including controls) is in.
+- Re-knit this file any time `FanGraphs_Batted_Ball_Splits.csv` is updated and
+  all four PNGs plus the results table will regenerate in `out_dir`.
